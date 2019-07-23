@@ -5,6 +5,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.util.Pagination;
 import com.mongodb.util.ParseUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -15,10 +16,10 @@ import java.util.*;
 class OperationForExecution {
 
     @SuppressWarnings("unchecked")
-    List<Map<String, Object>> _getDocsWithCommandFind(MongoCollection mongoCollection, JsonObject payload) {
+    List<Map<String, Object>> _getDocsWithCommandFind(MongoCollection mongoCollection, JsonObject payload, Pagination pagination) {
         Document filter = ParseUtils.parseJsonToDocument(payload);
         List<Map<String, Object>> result = new ArrayList<>();
-        FindIterable findIterable = mongoCollection.find(filter);
+        FindIterable findIterable = mongoCollection.find(filter).skip(pagination.getSkip()).limit(pagination.getLimit());
         for (Document doc : (Iterable<Document>) findIterable) {
             Map<String, Object> map = new LinkedHashMap<>(doc);
             result.add(map);
@@ -27,10 +28,14 @@ class OperationForExecution {
     }
 
     @SuppressWarnings("unchecked")
-    List<Map<String, Object>> _getDocsWithCommandAggregate(MongoCollection mongoCollection, JsonObject payload) {
+    List<Map<String, Object>> _getDocsWithCommandAggregate(MongoCollection mongoCollection, JsonObject payload, Pagination pagination) {
         List<Map<String, Object>> result = new ArrayList<>();
         Document filter = ParseUtils.parseJsonToDocument(payload);
-        AggregateIterable aggregateIterable = mongoCollection.aggregate(Collections.singletonList(Aggregates.match(filter)));
+        AggregateIterable aggregateIterable = mongoCollection.aggregate(Arrays.asList(
+                Aggregates.match(filter),
+                Aggregates.skip(pagination.getSkip()),
+                Aggregates.limit(pagination.getLimit()))
+        );
         for (Document doc : (Iterable<Document>) aggregateIterable) {
             Map<String, Object> map = new LinkedHashMap<>(doc);
             result.add(map);

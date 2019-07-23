@@ -1,6 +1,7 @@
 package com.mongodb.resources;
 
 import com.mongodb.services.MongoReactiveStreamServices;
+import com.mongodb.util.Pagination;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
 import javax.inject.Inject;
@@ -24,8 +25,10 @@ public class MongoReactiveStreamResources {
     @Path("/data/find/{collection}")
     public Response getDataFind(
             @Parameter(description = "name of collection", required = true) @PathParam("collection") String collectionName,
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page size") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
             JsonObject payload) {
-        List<Map<String, Object>> documents = mongoReactiveStreamResources.getDocsWithCommandFind(collectionName, payload);
+        List<Map<String, Object>> documents = mongoReactiveStreamResources.getDocsWithCommandFind(collectionName, payload, new Pagination(pageSize, pageNumber));
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(documents);
         return response.build();
@@ -46,8 +49,10 @@ public class MongoReactiveStreamResources {
     @Path("/data/aggregate/{collection}")
     public Response getDataAggregate(
             @Parameter(description = "name of collection", required = true) @PathParam("collection") String collectionName,
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page size") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
             JsonObject payload) {
-        List<Map<String, Object>> documents = mongoReactiveStreamResources.getDocsWithCommandAggregate(collectionName, payload);
+        List<Map<String, Object>> documents = mongoReactiveStreamResources.getDocsWithCommandAggregate(collectionName, payload, new Pagination(pageSize, pageNumber));
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(documents);
         return response.build();

@@ -3,6 +3,7 @@ package com.mongodb.services;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.dao.MongoDAOAsync;
 import com.mongodb.util.Constants;
+import com.mongodb.util.Pagination;
 import com.mongodb.util.PropertiesService;
 
 import javax.enterprise.context.Dependent;
@@ -33,11 +34,11 @@ public class AsynchronousDBServices extends OperationForExecutionAsync {
         return mongoDAOAsync.collection(dataBaseName, collectionName);
     }
 
-    public List<Map<String, Object>> getDocsWithCommandFind(String collection, JsonObject payload) {
+    public List<Map<String, Object>> getDocsWithCommandFind(String collection, JsonObject payload, Pagination pagination) {
         MongoCollection mongoCollection = getCollection(collection);
         List<Map<String, Object>> finalList = Collections.synchronizedList(new ArrayList<>());
         final CompletableFuture<List<Map<String, Object>>> future = new CompletableFuture<>();
-        _getDocsWithCommandFind(mongoCollection, payload, finalList, (result, throwable) -> {
+        _getDocsWithCommandFind(mongoCollection, payload, pagination, finalList, (result, throwable) -> {
             if (throwable != null) {
                 future.completeExceptionally(throwable);
             } else {
@@ -48,11 +49,11 @@ public class AsynchronousDBServices extends OperationForExecutionAsync {
         return finalList;
     }
 
-    public List<Map<String, Object>> getDocsWithCommandAggregate(String collection, JsonObject payload) {
+    public List<Map<String, Object>> getDocsWithCommandAggregate(String collection, JsonObject payload, Pagination pagination) {
         MongoCollection mongoCollection = getCollection(collection);
         List<Map<String, Object>> finalList = Collections.synchronizedList(new ArrayList<>());
         final CompletableFuture<List<Map<String, Object>>> future = new CompletableFuture<>();
-        _getDocsWithCommandAggregate(mongoCollection, payload, finalList, (result, throwable) -> {
+        _getDocsWithCommandAggregate(mongoCollection, payload, pagination, finalList, (result, throwable) -> {
             if (throwable != null) {
                 future.completeExceptionally(throwable);
             } else {

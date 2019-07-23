@@ -1,6 +1,7 @@
 package com.mongodb.resources;
 
 import com.mongodb.services.AsynchronousDBServices;
+import com.mongodb.util.Pagination;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
 import javax.inject.Inject;
@@ -24,8 +25,11 @@ public class AsynchronousResources {
     @Path("/data/find/{collection}")
     public Response getDataFind(
             @Parameter(description = "name of collection", required = true) @PathParam("collection") String collectionName,
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page size") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
             JsonObject payload) {
-        List<Map<String, Object>> documents = asynchronousDBServices.getDocsWithCommandFind(collectionName, payload);
+        Pagination pagination = new Pagination(pageSize, pageNumber);
+        List<Map<String, Object>> documents = asynchronousDBServices.getDocsWithCommandFind(collectionName, payload, pagination);
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(documents);
         return response.build();
@@ -46,8 +50,11 @@ public class AsynchronousResources {
     @Path("/data/aggregate/{collection}")
     public Response getDataAggregate(
             @Parameter(description = "collection's name", required = true) @PathParam("collection") String collectionName,
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page size") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
             JsonObject payload) {
-        List<Map<String, Object>> documents = asynchronousDBServices.getDocsWithCommandAggregate(collectionName, payload);
+        Pagination pagination = new Pagination(pageSize, pageNumber);
+        List<Map<String, Object>> documents = asynchronousDBServices.getDocsWithCommandAggregate(collectionName, payload, pagination);
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(documents);
         return response.build();

@@ -4,6 +4,7 @@ import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.util.Pagination;
 import com.mongodb.util.ParseUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -16,11 +17,12 @@ public class OperationForExecutionAsync {
     @SuppressWarnings("unchecked")
     void _getDocsWithCommandFind(MongoCollection mongoCollection,     // IN
                                  JsonObject payload,                  // IN
+                                 Pagination pagination,               // IN
                                  List<Map<String, Object>> finalList, // OUT
                                  final SingleResultCallback<List<Map<String, Object>>> callbackWhenFinished
     ) {
         Document filter = ParseUtils.parseJsonToDocument(payload);
-        mongoCollection.find(filter)
+        mongoCollection.find(filter).skip(pagination.getSkip()).limit(pagination.getLimit())
                 .map(this::documentToMap)
                 .into(finalList, callbackWhenFinished);
     }
@@ -28,10 +30,16 @@ public class OperationForExecutionAsync {
     @SuppressWarnings("unchecked")
     void _getDocsWithCommandAggregate(MongoCollection mongoCollection,
                                       JsonObject payload,
+                                      Pagination pagination,
                                       List<Map<String, Object>> finalList,
                                       final SingleResultCallback<List<Map<String, Object>>> callbackWhenFinished) {
         Document filter = ParseUtils.parseJsonToDocument(payload);
-        _getDocsWithCommandAggregate(mongoCollection, finalList, Collections.singletonList(Aggregates.match(filter)), callbackWhenFinished);
+        List<Bson> pipelines = Arrays.asList(
+                Aggregates.match(filter),
+                Aggregates.skip(pagination.getSkip()),
+                Aggregates.limit(pagination.getLimit())
+        );
+        _getDocsWithCommandAggregate(mongoCollection, finalList, pipelines, callbackWhenFinished);
     }
 
     void _getTotalDocsCommandFind(MongoCollection mongoCollection,
@@ -45,7 +53,7 @@ public class OperationForExecutionAsync {
                                        JsonObject payload,
                                        List<Map<String, Object>> finalList,
                                        final SingleResultCallback<List<Map<String, Object>>> callbackWhenFinished
-                                       ) {
+    ) {
         Document filter = ParseUtils.parseJsonToDocument(payload);
         List<Bson> pipelines = new ArrayList<>();
         pipelines.add(Aggregates.match(filter));

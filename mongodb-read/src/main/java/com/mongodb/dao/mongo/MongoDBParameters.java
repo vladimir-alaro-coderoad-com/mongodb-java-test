@@ -77,8 +77,7 @@ public class MongoDBParameters implements DefaultMapValues {
         primary = propertiesService.get("VIZIX_MONGO_PRIMARY", "");
         secondary = propertiesService.get("VIZIX_MONGO_SECONDARY", "");
 
-        database = "viz_root";
-
+        database = propertiesService.get("VIZIX_MONGO_DATABASE", "");
         username = propertiesService.get("VIZIX_MONGO_USERNAME", "");
         password = propertiesService.get("VIZIX_MONGO_PASSWORD", "");
         authDatabase = propertiesService.get("VIZIX_MONGO_AUTHDB", "");

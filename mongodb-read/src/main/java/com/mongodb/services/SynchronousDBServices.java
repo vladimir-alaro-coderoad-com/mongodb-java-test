@@ -3,6 +3,7 @@ package com.mongodb.services;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.dao.MongoDAO;
 import com.mongodb.util.Constants;
+import com.mongodb.util.Pagination;
 import com.mongodb.util.PropertiesService;
 
 import javax.enterprise.context.Dependent;
@@ -28,14 +29,14 @@ public class SynchronousDBServices extends OperationForExecution {
         return mongoDAO.collection(dataBaseName, collectionName);
     }
 
-    public List<Map<String, Object>> getDocsWithCommandFind(String collection, JsonObject payload) {
+    public List<Map<String, Object>> getDocsWithCommandFind(String collection, JsonObject payload, Pagination pagination) {
         MongoCollection mongoCollection = getCollection(collection);
-        return _getDocsWithCommandFind(mongoCollection, payload);
+        return _getDocsWithCommandFind(mongoCollection, payload, pagination);
     }
 
-    public List<Map<String, Object>> getDocsWithCommandAggregate(String collection, JsonObject payload) {
+    public List<Map<String, Object>> getDocsWithCommandAggregate(String collection, JsonObject payload, Pagination pagination) {
         MongoCollection mongoCollection = getCollection(collection);
-        return _getDocsWithCommandAggregate(mongoCollection, payload);
+        return _getDocsWithCommandAggregate(mongoCollection, payload, pagination);
     }
 
     public Long getTotalDocsCommandFind(String collection, JsonObject payload) {

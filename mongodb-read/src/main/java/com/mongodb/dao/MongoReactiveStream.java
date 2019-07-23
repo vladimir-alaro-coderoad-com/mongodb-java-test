@@ -9,9 +9,11 @@ import com.mongodb.reactivestreams.client.MongoCollection;
 import com.mongodb.util.PropertiesService;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.logging.Logger;
 
+@ApplicationScoped
 public class MongoReactiveStream {
 
     private final Logger logger = Logger.getLogger(this.getClass().getName());

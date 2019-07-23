@@ -7,6 +7,7 @@ import com.mongodb.reactivestreams.client.MongoCollection;
 import com.mongodb.services.Observables.ListMapsSubscriber;
 import com.mongodb.services.Observables.SingleResultSubscriber;
 import com.mongodb.util.Constants;
+import com.mongodb.util.Pagination;
 import com.mongodb.util.ParseUtils;
 import com.mongodb.util.PropertiesService;
 import org.bson.Document;
@@ -16,7 +17,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -40,11 +41,11 @@ public class MongoReactiveStreamServices {
         return mongoReactiveStream.collection(dataBaseName, collectionName);
     }
 
-    public List<Map<String, Object>> getDocsWithCommandFind(String collection, JsonObject payload) {
+    public List<Map<String, Object>> getDocsWithCommandFind(String collection, JsonObject payload, Pagination pagination) {
         Document filter = ParseUtils.parseJsonToDocument(payload);
         MongoCollection mongoCollection = getCollection(collection);
         ListMapsSubscriber subscriber = new ListMapsSubscriber();
-        mongoCollection.find(filter).subscribe(subscriber);
+        mongoCollection.find(filter).skip(pagination.getSkip()).limit(pagination.getLimit()).subscribe(subscriber);
         try {
             subscriber.await();
         } catch (Throwable throwable) {
@@ -53,11 +54,16 @@ public class MongoReactiveStreamServices {
         return subscriber.getResults();
     }
 
-    public List<Map<String, Object>> getDocsWithCommandAggregate(String collection, JsonObject payload) {
+    public List<Map<String, Object>> getDocsWithCommandAggregate(String collection, JsonObject payload, Pagination pagination) {
         Document filter = ParseUtils.parseJsonToDocument(payload);
         MongoCollection mongoCollection = getCollection(collection);
         ListMapsSubscriber subscriber = new ListMapsSubscriber();
-        mongoCollection.aggregate(Collections.singletonList(Aggregates.match(filter))).subscribe(subscriber);
+        List<Bson> pipeline = Arrays.asList(
+                Aggregates.match(filter),
+                Aggregates.skip(pagination.getSkip()),
+                Aggregates.limit(pagination.getLimit())
+        );
+        mongoCollection.aggregate(pipeline).subscribe(subscriber);
         try {
             subscriber.await();
         } catch (Throwable throwable) {
