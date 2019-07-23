@@ -1,10 +1,13 @@
 package com.mongodb.services;
 
+import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoCollection;
+import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.dao.MongoDAOAsync;
 import com.mongodb.util.Constants;
 import com.mongodb.util.Pagination;
 import com.mongodb.util.PropertiesService;
+import org.bson.Document;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -106,5 +109,29 @@ public class AsynchronousDBServices extends OperationForExecutionAsync {
             }
         }
         return 0L;
+    }
+
+    public int getTotalFunctions() throws ExecutionException, InterruptedException {
+        MongoDatabase database = mongoDAOAsync.db(propertiesService.get(Constants.DEFAULT_DATABASE_KEY));
+        final CompletableFuture<Integer> future = new CompletableFuture<>();
+        database.runCommand(new Document("eval", "db.system.js.count()"), new SingleResultCallback<Document>() {
+            @Override
+            public void onResult(final Document result, final Throwable t) {
+                future.complete(result.getDouble("retval").intValue());
+            }
+        });
+        return future.get();
+    }
+
+    public Document runFunction() throws ExecutionException, InterruptedException {
+        MongoDatabase database = mongoDAOAsync.db(propertiesService.get(Constants.DEFAULT_DATABASE_KEY));
+        final CompletableFuture<Document> future = new CompletableFuture<>();
+        database.runCommand(new Document("eval", "test()"), new SingleResultCallback<Document>() {
+            @Override
+            public void onResult(final Document result, final Throwable t) {
+                future.complete(result);
+            }
+        });
+        return future.get();
     }
 }

@@ -2,6 +2,7 @@ package com.mongodb.resources;
 
 import com.mongodb.services.AsynchronousDBServices;
 import com.mongodb.util.Pagination;
+import org.bson.Document;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Path("/async")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -68,6 +70,24 @@ public class AsynchronousResources {
         Long totalDocs = asynchronousDBServices.getTotalDocsCommandAggregate(collectionName, payload);
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(Collections.singletonMap("total", totalDocs));
+        return response.build();
+    }
+
+    @POST
+    @Path("/test")
+    public Response test() throws ExecutionException, InterruptedException {
+        int totalDocs = asynchronousDBServices.getTotalFunctions();
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        response.entity(Collections.singletonMap("total", totalDocs));
+        return response.build();
+    }
+
+    @POST
+    @Path("/run")
+    public Response run() throws ExecutionException, InterruptedException {
+        Document result = asynchronousDBServices.runFunction();
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        response.entity(result);
         return response.build();
     }
 }

@@ -4,6 +4,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.async.client.MongoClient;
 import com.mongodb.async.client.MongoClients;
 import com.mongodb.async.client.MongoCollection;
+import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.dao.base.DBConnectionString;
 import com.mongodb.dao.mongo.*;
 import com.mongodb.util.PropertiesService;
@@ -41,5 +42,9 @@ public class MongoDAOAsync {
 
     public MongoCollection collection(String databaseName, String collectionName) {
         return mongoClient.getDatabase(databaseName).getCollection(collectionName);
+    }
+
+    public MongoDatabase db(String databaseName) {
+        return mongoClient.getDatabase(databaseName);
     }
 }
