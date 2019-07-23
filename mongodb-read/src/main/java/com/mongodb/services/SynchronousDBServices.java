@@ -24,7 +24,7 @@ public class SynchronousDBServices extends OperationForExecution {
 
     private MongoCollection getCollection(String collectionName) {
         String dataBaseName = propertiesService.get(Constants.DEFAULT_DATABASE_KEY);
-        logger.info("dataBase : " + dataBaseName + ", collection : " + collectionName);
+        logger.info("Sync connection to dataBase : " + dataBaseName + ", collection : " + collectionName);
         return mongoDAO.collection(dataBaseName, collectionName);
     }
 
