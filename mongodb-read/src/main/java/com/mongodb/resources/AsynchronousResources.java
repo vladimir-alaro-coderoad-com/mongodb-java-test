@@ -74,17 +74,47 @@ public class AsynchronousResources {
     }
 
     @POST
-    @Path("/test")
-    public Response test() throws ExecutionException, InterruptedException {
+    @Path("/total/functions")
+    public Response totalFunctions() throws ExecutionException, InterruptedException {
         int totalDocs = asynchronousDBServices.getTotalFunctions();
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(Collections.singletonMap("total", totalDocs));
         return response.build();
     }
 
+    @PUT
+    @Path("function/{name}/{collection}")
+    public Response createFunction(
+            @Parameter(description = "function's name", required = true) @PathParam("name") String functionName,
+            @Parameter(description = "collection's name", required = true) @PathParam("name") String collectionName,
+            JsonObject payload) {
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
+
+    @PATCH
+    @Path("function/{name}/{collection}")
+    public Response updateFunction(
+            @Parameter(description = "function's name", required = true) @PathParam("name") String functionName,
+            @Parameter(description = "collection's name", required = true) @PathParam("name") String collectionName,
+            JsonObject payload) {
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
+
+    @DELETE
+    @Path("function/{name}/{collection}")
+    public Response deleteFunction(
+            @Parameter(description = "function's name", required = true) @PathParam("name") String functionName,
+            @Parameter(description = "collection's name", required = true) @PathParam("name") String collectionName,
+            JsonObject payload) {
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
+
     @POST
-    @Path("/run")
-    public Response run() throws ExecutionException, InterruptedException {
+    @Path("/run/function/{name}/{collection}")
+    public Response run(
+            @Parameter(description = "function's name", required = true) @PathParam("name") String functionName,
+            @Parameter(description = "collection's name", required = true) @PathParam("name") String collectionName,
+            JsonObject payload) throws ExecutionException, InterruptedException {
         Document result = asynchronousDBServices.runFunction();
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(result);
