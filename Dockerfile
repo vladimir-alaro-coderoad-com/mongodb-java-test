@@ -10,11 +10,11 @@ RUN mkdir -p /opt/libs && cd /opt/libs \
     && wget http://central.maven.org/maven2/com/squareup/okhttp3/okhttp/3.7.0/okhttp-3.7.0.jar \
     && wget http://central.maven.org/maven2/com/squareup/okio/okio/1.12.0/okio-1.12.0.jar \
     && wget http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar \
-    && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver/3.8.2/mongodb-driver-3.10.0.jar \
-    && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver-async/3.8.2/mongodb-driver-async-3.10.0.jar \
+    && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver/3.10.0/mongodb-driver-3.10.0.jar \
+    && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver-async/3.10.0/mongodb-driver-async-3.10.0.jar \
     && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver-reactivestreams/1.11.0/mongodb-driver-reactivestreams-1.11.0.jar \
-    && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver-core/3.8.2/mongodb-driver-core-3.10.0.jar \
-    && wget http://central.maven.org/maven2/org/mongodb/bson/3.8.2/bson-3.10.0.jar \
+    && wget http://central.maven.org/maven2/org/mongodb/mongodb-driver-core/3.10.0/mongodb-driver-core-3.10.0.jar \
+    && wget http://central.maven.org/maven2/org/mongodb/bson/3.10.0/bson-3.10.0.jar \
     && wget http://central.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2.jar \
     \
     && chmod +r -R /opt/libs/*

@@ -26,10 +26,9 @@ public class SynchronousResources {
     public Response getDataFind(
             @Parameter(description = "name of collection", required = true) @PathParam("collection") String collectionName,
             @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
-            @Parameter(description = "page size") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
+            @Parameter(description = "page number") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
             JsonObject payload) {
-        Pagination pagination = new Pagination(pageSize, pageNumber);
-        List<Map<String, Object>> documents = synchronousDBServices.getDocsWithCommandFind(collectionName, payload, pagination);
+        List<Map<String, Object>> documents = synchronousDBServices.getDocsWithCommandFind(collectionName, payload, new Pagination(pageSize, pageNumber));
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(documents);
         return response.build();
@@ -39,6 +38,7 @@ public class SynchronousResources {
     @Path("/total/find/{collection}")
     public Response getTotalFind(
             @Parameter(description = "name of collection", required = true) @PathParam("collection") String collectionName,
+            @Parameter(description = "enable subQuery") @QueryParam("subQuery") @DefaultValue("false") Boolean enableSubQuery,
             JsonObject payload) {
         Long totalDocs = synchronousDBServices.getTotalDocsCommandFind(collectionName, payload);
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
@@ -51,10 +51,9 @@ public class SynchronousResources {
     public Response getDataAggregate(
             @Parameter(description = "collection's name", required = true) @PathParam("collection") String collectionName,
             @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
-            @Parameter(description = "page size") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
+            @Parameter(description = "page number") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
             JsonObject payload) {
-        Pagination pagination = new Pagination(pageSize, pageNumber);
-        List<Map<String, Object>> documents = synchronousDBServices.getDocsWithCommandAggregate(collectionName, payload, pagination);
+        List<Map<String, Object>> documents = synchronousDBServices.getDocsWithCommandAggregate(collectionName, payload, new Pagination(pageSize, pageNumber));
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(documents);
         return response.build();
@@ -68,6 +67,30 @@ public class SynchronousResources {
         Long totalDocs = synchronousDBServices.getTotalDocsCommandAggregate(collectionName, payload);
         Response.ResponseBuilder response = Response.status(Response.Status.OK);
         response.entity(Collections.singletonMap("total", totalDocs));
+        return response.build();
+    }
+
+    @POST
+    @Path("/sq-op1/data/find")
+    public Response getDataFindWithSubQueryOP1(
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page number") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
+            JsonObject payload) {
+        List<Map<String, Object>> documents = synchronousDBServices.getDocsWithCommandFindWithSubQueryOP1(payload, new Pagination(pageSize, pageNumber));
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        response.entity(documents);
+        return response.build();
+    }
+
+    @POST
+    @Path("/sq-op2/data/find")
+    public Response getDataFindWithSubQueryOP2(
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page number") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
+            JsonObject payload) {
+        List<Map<String, Object>> documents = synchronousDBServices.getDocsWithCommandFindWithSubQueryOP2(payload, new Pagination(pageSize, pageNumber));
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        response.entity(documents);
         return response.build();
     }
 }

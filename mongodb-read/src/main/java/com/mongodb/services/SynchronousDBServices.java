@@ -48,4 +48,16 @@ public class SynchronousDBServices extends OperationForExecution {
         MongoCollection mongoCollection = getCollection(collection);
         return _getTotalDocsCommandAggregate(mongoCollection, payload);
     }
+
+    public List<Map<String, Object>> getDocsWithCommandFindWithSubQueryOP1(JsonObject payload, Pagination pagination) {
+        MongoCollection mongoCollectionHistory = getCollection(Constants.HISTORY_COLLECTION);
+        MongoCollection mongoCollectionIndex = getCollection(Constants.INDEX_COLLECTION);
+        return _getDocsWithCommandFindWithSubQueryOP1(mongoCollectionHistory, mongoCollectionIndex, payload, pagination);
+    }
+
+    public List<Map<String, Object>> getDocsWithCommandFindWithSubQueryOP2(JsonObject payload, Pagination pagination) {
+        MongoCollection mongoCollectionHistory = getCollection(Constants.HISTORY_COLLECTION);
+        MongoCollection mongoCollectionIndex = getCollection(Constants.INDEX_COLLECTION);
+        return _getDocsWithCommandFindWithSubQueryOP2(mongoCollectionHistory, mongoCollectionIndex, payload, pagination);
+    }
 }

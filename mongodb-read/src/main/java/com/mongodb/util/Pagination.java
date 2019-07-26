@@ -8,12 +8,12 @@ public class Pagination {
     private Integer limit;
 
     public Pagination(Integer pageSize, Integer pageNum) {
-        this.pageSize = pageSize == null ? 1 : pageSize;
-        this.pageNum = pageNum == null || pageNum > 100 ? 100 : pageNum;
-        calcualte();
+        this.pageSize = pageSize == null || pageSize > 100 ? 100 : pageSize;
+        this.pageNum = pageNum == null ? 1 : pageNum;
+        calculate();
     }
 
-    private void calcualte() {
+    private void calculate() {
         // calculate skip and limit
         skip = pageSize * (pageNum - 1);
         limit = pageNum;
