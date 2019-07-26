@@ -1,6 +1,5 @@
 package com.mongodb.services;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -9,7 +8,6 @@ import com.mongodb.client.model.*;
 import com.mongodb.util.Constants;
 import com.mongodb.util.Pagination;
 import com.mongodb.util.ParseUtils;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -18,6 +16,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.mongodb.util.ParseUtils._$;
+import static com.mongodb.util.ParseUtils.printQuery;
 
 class OperationForExecution {
 
@@ -135,29 +136,12 @@ class OperationForExecution {
                 .collect(Collectors.toList());
     }
 
-    private Bson mergeFilter(Document mainFilter, Bson subQuery) {
-        final List<Bson> finalFilter = new ArrayList<>();
-        finalFilter.add(subQuery);
-        if (!mainFilter.isEmpty()) {
-            finalFilter.add(mainFilter);
-        }
-        if (finalFilter.isEmpty()) {
-            return new Document();
-        }
-        return Filters.and(finalFilter);
-    }
-
-    private void printQuery(String prefix, Bson filter) {
-        BsonDocument bsonDocument = filter.toBsonDocument(BsonDocument.class, MongoClient.getDefaultCodecRegistry());
-        System.out.println("\n" + prefix + "\n" + bsonDocument.toJson() + "\n\n");
-    }
-
     private MongoIterable<Document> getResultSubQuery(MongoCollection<Document> mongoCollection, Long startDate, Long endDate, int skip, int limit) {
         List<Bson> pipelines = executeThingSnapshotsIndex(startDate, endDate, skip, limit);
         return mongoCollection.aggregate(pipelines).allowDiskUse(Boolean.TRUE);
     }
 
-    private List<Bson> executeThingSnapshotsIndex(Long startDate, Long endDate, int skip, int limit) {
+    public static List<Bson> executeThingSnapshotsIndex(Long startDate, Long endDate, int skip, int limit) {
         List<Bson> pipelines = new ArrayList<>();
 
         Bson match = null;
@@ -181,10 +165,6 @@ class OperationForExecution {
         }
 //        printQuery("", new Document("AGGREGATE", pipelines));
         return pipelines;
-    }
-
-    private String _$(String value) {
-        return "$" + value;
     }
 
 }

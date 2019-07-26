@@ -12,5 +12,7 @@ public class Constants {
     public static final String TIME = "t";
     public static final String THING_ID = "ti";
     public static final String _ID = "_id";
+    public static final String VALUE = "value";
+    public static final String VALUE_ID = "value._id";
     public static final String OID = "oid";
 }

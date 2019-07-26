@@ -68,4 +68,28 @@ public class MongoReactiveStreamResources {
         response.entity(Collections.singletonMap("total", totalDocs));
         return response.build();
     }
+
+    @POST
+    @Path("/sq-op1/data/find")
+    public Response getDataFindWithSubQueryOP1(
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page number") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
+            JsonObject payload) {
+        List<Map<String, Object>> documents = mongoReactiveStreamResources.getDocsWithCommandFindWithSubQueryOP1(payload, new Pagination(pageSize, pageNumber));
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        response.entity(documents);
+        return response.build();
+    }
+
+    @POST
+    @Path("/sq-op2/data/find")
+    public Response getDataFindWithSubQueryOP2(
+            @Parameter(description = "page size") @QueryParam("pageSize") @DefaultValue("1") Integer pageSize,
+            @Parameter(description = "page number") @QueryParam("pageNumber") @DefaultValue("100") Integer pageNumber,
+            JsonObject payload) {
+        List<Map<String, Object>> documents = mongoReactiveStreamResources.getDocsWithCommandFindWithSubQueryOP2(payload, new Pagination(pageSize, pageNumber));
+        Response.ResponseBuilder response = Response.status(Response.Status.OK);
+        response.entity(documents);
+        return response.build();
+    }
 }
